@@ -50,7 +50,7 @@ export default function Home() {
             Resources
           </h2>
           <p className="text-sm text-[var(--muted)]">
-            Nightshade, Glaze, Pixsy, Cara, BlueSky &mdash; tools and platforms the art community actually recommends for protection.
+            Nightshade, Glaze, Pixsy, Cara, BlueSky, and other tools the art community actually recommends for protection.
           </p>
         </Link>
       </section>
@@ -61,7 +61,7 @@ export default function Home() {
 
         <div>
           <h3 className="font-semibold text-[var(--foreground)] mb-1">Do you store my images?</h3>
-          <p>No. Everything happens in your browser using the Canvas API and Web Crypto API. Your art never touches any server. You can verify this in DevTools &mdash; zero network requests when you use the tools.</p>
+          <p>No. Everything happens in your browser using the Canvas API and Web Crypto API. Your art never touches any server.</p>
         </div>
 
         <div>
@@ -71,7 +71,7 @@ export default function Home() {
 
         <div>
           <h3 className="font-semibold text-[var(--foreground)] mb-1">Is the proof certificate valid in court?</h3>
-          <p>The SHA-256 hash is cryptographically solid &mdash; the same technology used in blockchain and digital signatures. It&apos;s not a formal copyright registration (US Copyright Office, ~$65), but it serves as strong supplementary evidence. Email the certificate to yourself for a third-party timestamp.</p>
+          <p>The SHA-256 hash is cryptographically solid. It&apos;s the same technology used in blockchain and digital signatures. It&apos;s not a formal copyright registration (US Copyright Office, ~$65), but it serves as strong supplementary evidence. Email the certificate to yourself for a third-party timestamp.</p>
         </div>
 
         <div>

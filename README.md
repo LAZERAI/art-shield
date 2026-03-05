@@ -2,13 +2,13 @@
 
 Free browser-based tools to help artists protect their work from theft.
 
-**Live Site:** [artshield.vercel.app](https://artshield.vercel.app)
+**Live Site:** [art-shield.vercel.app](https://art-shield.vercel.app)
 
 ---
 
 ## About
 
-ArtShield is a collection of tools for artists who want to protect their work online. Everything runs 100% in the browser — images never leave your device. No server uploads, no tracking, no analytics.
+ArtShield is a collection of tools for artists who want to protect their work online. Everything runs 100% in the browser. Images never leave your device. No server uploads, no tracking, no analytics.
 
 ## Tools
 
@@ -26,9 +26,8 @@ Curated list of tools and platforms the art community recommends: Nightshade, Gl
 
 ## Privacy
 
-- **Zero server uploads** — all image processing uses the browser's Canvas API and Web Crypto API
-- **No analytics, no cookies, no tracking**
-- Verify this yourself — open DevTools Network tab while using any tool
+- **Zero server uploads.** All image processing uses the browser's Canvas API and Web Crypto API.
+- **No analytics, no cookies, no tracking.**
 
 ## Run Locally
 

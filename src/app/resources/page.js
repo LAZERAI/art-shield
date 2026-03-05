@@ -53,7 +53,7 @@ const sections = [
       {
         name: "ArtStation",
         url: "https://www.artstation.com/",
-        desc: "Professional art portfolio. Has 'NoAI' meta tag option (CHECK YOUR SETTINGS — it's unchecked by default!).",
+        desc: "Professional art portfolio. Has 'NoAI' meta tag option. Check your settings, it's unchecked by default.",
       },
     ],
   },

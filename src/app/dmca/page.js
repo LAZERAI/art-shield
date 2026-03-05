@@ -65,8 +65,8 @@ Electronic Signature: /s/ ${form.artistName}
 Date: ${date}
 
 ${"=".repeat(50)}
-This notice was generated using ArtShield (artshield.vercel.app)
-For informational purposes only — not legal advice.`;
+This notice was generated using ArtShield (art-shield.vercel.app)
+For informational purposes only. Not legal advice.`;
 
     setGenerated(notice);
   }
@@ -215,7 +215,7 @@ For informational purposes only — not legal advice.`;
           </pre>
           <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-700/30 rounded-lg">
             <p className="text-xs text-yellow-300">
-              ⚠️ This is a template — not legal advice. Review it before sending. A DMCA notice is a legal document made under penalty of perjury. Make sure all information is accurate.
+              ⚠️ This is a template, not legal advice. Review it before sending. A DMCA notice is a legal document made under penalty of perjury. Make sure all information is accurate.
             </p>
           </div>
         </div>
