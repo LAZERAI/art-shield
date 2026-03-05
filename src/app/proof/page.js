@@ -143,9 +143,9 @@ export default function ProofPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-2">proof of ownership</h1>
+      <h1 className="text-3xl font-bold mb-2">Proof of Ownership</h1>
       <p className="text-[var(--muted)] mb-8">
-        drop your art below and we&apos;ll generate a unique hash (digital fingerprint) for it. if anyone ever tries to claim your art, this proves you had the original file.
+        Drop your artwork below to generate a unique SHA-256 hash (digital fingerprint). If anyone ever claims your art as theirs, this certificate proves you had the original file first.
       </p>
 
       <FileDropZone onFile={handleFile} />

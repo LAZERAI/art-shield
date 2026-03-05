@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "ArtShield",
-  description: "free tools to protect your art from theft. proof of ownership, watermarking, DMCA takedowns. runs in your browser.",
+  title: "ArtShield — Protect Your Art",
+  description: "Free browser-based tools for artists. Proof of ownership, visible & invisible watermarking, DMCA takedown generation. Your art never leaves your device.",
 };
 
 export default function RootLayout({ children }) {
@@ -28,8 +28,8 @@ export default function RootLayout({ children }) {
           {children}
         </main>
         <footer className="border-t border-[var(--border)] py-8 text-center text-sm text-[var(--muted)]">
-          <p>your art stays on your device. always.</p>
-          <p className="mt-2">artshield is free and <a href="https://github.com/LAZERAI/art-shield" className="text-[var(--accent)] hover:underline">open source</a></p>
+          <p>Your art stays on your device. Always.</p>
+          <p className="mt-2">ArtShield is free and <a href="https://github.com/LAZERAI/art-shield" className="text-[var(--accent)] hover:underline">open source</a>.</p>
         </footer>
       </body>
     </html>

@@ -1,7 +1,7 @@
 const sections = [
   {
-    title: "anti-AI tools",
-    desc: "these mess up AI training data so scrapers can't learn from your work. use them before you post.",
+    title: "Anti-AI Tools",
+    desc: "These mess up AI training data so scrapers can't learn from your work. Use them before you post.",
     items: [
       {
         name: "Nightshade",
@@ -16,8 +16,8 @@ const sections = [
     ],
   },
   {
-    title: "find your stolen art",
-    desc: "these help you track down where your art ended up without your permission.",
+    title: "Find Your Stolen Art",
+    desc: "These help you track down where your art ended up without your permission.",
     items: [
       {
         name: "Pixsy",
@@ -37,8 +37,8 @@ const sections = [
     ],
   },
   {
-    title: "platforms that don't suck",
-    desc: "places that actually try to protect artists instead of feeding your work to AI.",
+    title: "Artist-Friendly Platforms",
+    desc: "Places that actually try to protect artists instead of feeding your work to AI.",
     items: [
       {
         name: "Cara",
@@ -58,8 +58,8 @@ const sections = [
     ],
   },
   {
-    title: "legal stuff / DMCA links",
-    desc: "where to file takedowns and what your actual rights are.",
+    title: "Legal / DMCA Links",
+    desc: "Where to file takedowns and what your actual rights are.",
     items: [
       {
         name: "Twitter/X Copyright Policy",
@@ -84,8 +84,8 @@ const sections = [
     ],
   },
   {
-    title: "tips from other artists",
-    desc: "stuff people on reddit actually recommend (not just generic advice).",
+    title: "Tips from Other Artists",
+    desc: "Practical advice from Reddit and artist communities.",
     items: [
       {
         name: "Watermark everything",
@@ -118,9 +118,9 @@ const sections = [
 export default function ResourcesPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-2">resources</h1>
+      <h1 className="text-3xl font-bold mb-2">Resources</h1>
       <p className="text-[var(--muted)] mb-10">
-        stuff that actually helps. compiled from reddit threads, artist communities, and a lot of trial and error.
+        Curated tools, platforms, and advice from artist communities. If it helps protect your work, it belongs here.
       </p>
 
       <div className="space-y-10">
@@ -156,7 +156,7 @@ export default function ResourcesPage() {
 
       <div className="mt-12 p-4 bg-[var(--card)] border border-[var(--border)] rounded-xl text-center">
         <p className="text-sm text-[var(--muted)]">
-          know something that should be on this list? hit us up on github.
+          Know a tool or resource that should be on this list? Open an issue on <a href="https://github.com/LAZERAI/art-shield" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">GitHub</a>.
         </p>
       </div>
     </div>

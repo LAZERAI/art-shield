@@ -92,9 +92,9 @@ For informational purposes only — not legal advice.`;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-2">dmca takedown generator</h1>
+      <h1 className="text-3xl font-bold mb-2">DMCA Takedown Generator</h1>
       <p className="text-[var(--muted)] mb-8">
-        someone stole your art? fill this out and we&apos;ll write the takedown notice for you. just copy-paste it and send it to the platform.
+        Someone posted your art without permission? Fill out the form below and we&apos;ll generate a proper DMCA takedown notice. Copy it and send it directly to the platform.
       </p>
 
       <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 mb-6">

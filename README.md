@@ -1,38 +1,36 @@
 # ArtShield
 
-free browser-based tools to help artists protect their work from theft.
+Free browser-based tools to help artists protect their work from theft.
 
-**live site:** [artshield.vercel.app](https://artshield.vercel.app)
+**Live Site:** [artshield.vercel.app](https://artshield.vercel.app)
 
 ---
 
-## what is this
+## About
 
-a set of tools for artists who are tired of getting their art stolen on twitter/instagram/tiktok/etc. everything runs 100% in your browser — your images never leave your device, no server uploads, no tracking.
+ArtShield is a collection of tools for artists who want to protect their work online. Everything runs 100% in the browser — images never leave your device. No server uploads, no tracking, no analytics.
 
-built this because the advice on reddit basically boiled down to "watermark everything and file DMCAs" but there wasn't a single place that made it all easy.
+## Tools
 
-## tools
+### Proof of Ownership
+Upload your artwork and get a SHA-256 hash certificate with a timestamp. This creates a unique digital fingerprint that proves you had the original file at a specific time. The hash changes if even a single pixel is different.
 
-### proof of ownership
-drop your art in and get a SHA-256 hash certificate with a timestamp. it's a unique digital fingerprint — if someone claims your art is theirs, this proves you had the original file. the hash changes if even a single pixel is different.
+### Watermark
+Add visible text watermarks, overlay custom signature images, or embed invisible watermarks into your art. Supports multiple positions, tiling, opacity control, and LSB steganography for hidden messages that survive casual editing.
 
-### watermark
-put your name on your art before you post it. pick the position, size, and opacity. supports tiling too for full coverage. not foolproof but it adds friction.
+### DMCA Takedown Generator
+Fill out a form and get a properly formatted DMCA takedown notice. Includes templates for Twitter/X, Instagram, TikTok, YouTube, and Reddit with the correct contact addresses.
 
-### dmca takedown generator
-fill out a form and get a proper DMCA takedown notice ready to send. has templates for twitter/x, instagram, tiktok, youtube, and reddit with the correct email addresses.
+### Resources
+Curated list of tools and platforms the art community recommends: Nightshade, Glaze, Pixsy, Cara, TinEye, and more.
 
-### resources
-curated list of tools the art community actually recommends: nightshade, glaze, pixsy, cara, tineye, etc. pulled from reddit threads and artist communities.
+## Privacy
 
-## privacy
+- **Zero server uploads** — all image processing uses the browser's Canvas API and Web Crypto API
+- **No analytics, no cookies, no tracking**
+- Verify this yourself — open DevTools Network tab while using any tool
 
-- **zero server uploads** — all image processing uses the browser's Canvas API and Web Crypto API
-- **no analytics, no cookies, no tracking**
-- open your devtools network tab while using it if you don't believe me
-
-## run it locally
+## Run Locally
 
 ```bash
 git clone https://github.com/LAZERAI/art-shield.git
@@ -41,20 +39,20 @@ npm install
 npm run dev
 ```
 
-open [localhost:3000](http://localhost:3000)
+Open [localhost:3000](http://localhost:3000)
 
-## tech
+## Tech Stack
 
-- next.js (app router)
-- react
-- tailwind css
-- web crypto API (SHA-256 hashing)
-- canvas API (watermarking + certificate generation)
+- Next.js (App Router)
+- React
+- Tailwind CSS
+- Web Crypto API (SHA-256 hashing)
+- Canvas API (watermarking + certificate generation)
 
-## contributing
+## Contributing
 
-if you know of a tool or resource that should be listed, open an issue or PR. always looking for more stuff that actually helps artists.
+If you know of a tool or resource that should be listed, open an issue or PR. Contributions are welcome.
 
-## license
+## License
 
-MIT — do whatever you want with it.
+MIT

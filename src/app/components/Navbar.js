@@ -4,11 +4,11 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const links = [
-  { href: "/", label: "home" },
-  { href: "/proof", label: "proof" },
-  { href: "/watermark", label: "watermark" },
-  { href: "/dmca", label: "dmca" },
-  { href: "/resources", label: "resources" },
+  { href: "/", label: "Home" },
+  { href: "/proof", label: "Proof" },
+  { href: "/watermark", label: "Watermark" },
+  { href: "/dmca", label: "DMCA" },
+  { href: "/resources", label: "Resources" },
 ];
 
 export default function Navbar() {
