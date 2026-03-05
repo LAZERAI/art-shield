@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
         </main>
         <footer className="border-t border-[var(--border)] py-8 text-center text-sm text-[var(--muted)]">
           <p>your art stays on your device. always.</p>
-          <p className="mt-2">artshield is free and <a href="https://github.com" className="text-[var(--accent)] hover:underline">open source</a></p>
+          <p className="mt-2">artshield is free and <a href="https://github.com/LAZERAI/art-shield" className="text-[var(--accent)] hover:underline">open source</a></p>
         </footer>
       </body>
     </html>

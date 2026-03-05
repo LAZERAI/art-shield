@@ -35,7 +35,7 @@ curated list of tools the art community actually recommends: nightshade, glaze, 
 ## run it locally
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/art-shield.git
+git clone https://github.com/LAZERAI/art-shield.git
 cd art-shield
 npm install
 npm run dev
