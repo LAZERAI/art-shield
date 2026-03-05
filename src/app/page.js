@@ -1,65 +1,89 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="max-w-5xl mx-auto px-4 py-16">
+
+      <section className="text-center mb-16">
+        <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+          stop art <span className="text-[var(--accent)]">theft</span>
+        </h1>
+        <p className="text-lg text-[var(--muted)] max-w-xl mx-auto mb-3">
+          tired of people stealing your art on twitter? yeah, us too.
+        </p>
+        <p className="text-lg text-[var(--muted)] max-w-xl mx-auto mb-6">
+          free tools to prove your art is yours, watermark it, and send takedown notices when someone steals it.
+        </p>
+        <p className="text-sm text-[var(--accent)]/80">
+          everything runs in your browser btw. we never see your art.
+        </p>
+      </section>
+
+      {/* tools */}
+      <section className="grid md:grid-cols-2 gap-5 mb-16">
+        <Link href="/proof" className="group block p-6 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5">
+          <h2 className="text-lg font-semibold mb-2 group-hover:text-[var(--accent)] transition-colors">
+            proof of ownership
+          </h2>
+          <p className="text-sm text-[var(--muted)]">
+            upload your art, get a SHA-256 hash certificate with a timestamp.
+            basically a digital fingerprint that proves you had the file first. if someone claims it&apos;s theirs, you have the receipt.
           </p>
+        </Link>
+
+        <Link href="/watermark" className="group block p-6 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5">
+          <h2 className="text-lg font-semibold mb-2 group-hover:text-[var(--accent)] transition-colors">
+            watermark
+          </h2>
+          <p className="text-sm text-[var(--muted)]">
+            slap your name on your art before posting. pick where it goes, how big, how visible.
+            not bulletproof but it makes thieves think twice.
+          </p>
+        </Link>
+
+        <Link href="/dmca" className="group block p-6 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5">
+          <h2 className="text-lg font-semibold mb-2 group-hover:text-[var(--accent)] transition-colors">
+            dmca generator
+          </h2>
+          <p className="text-sm text-[var(--muted)]">
+            someone stole your art? fill out a quick form and we&apos;ll generate a DMCA takedown notice you can send to twitter, instagram, tiktok, wherever.
+          </p>
+        </Link>
+
+        <Link href="/resources" className="group block p-6 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5">
+          <h2 className="text-lg font-semibold mb-2 group-hover:text-[var(--accent)] transition-colors">
+            resources
+          </h2>
+          <p className="text-sm text-[var(--muted)]">
+            nightshade, glaze, pixsy, cara, bluesky — all the tools and platforms the art community actually recommends.
+          </p>
+        </Link>
+      </section>
+
+      {/* faq-ish */}
+      <section className="max-w-2xl mx-auto space-y-6 text-sm text-[var(--muted)]">
+        <h2 className="text-xl font-bold text-[var(--foreground)]">wait, how does this work?</h2>
+
+        <div>
+          <h3 className="font-semibold text-[var(--foreground)] mb-1">do you store my images?</h3>
+          <p>no. literally everything happens in your browser. your art never touches any server. open devtools if you don&apos;t believe me — zero network requests when you use the tools.</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div>
+          <h3 className="font-semibold text-[var(--foreground)] mb-1">can I actually stop people from downloading my art on twitter?</h3>
+          <p>honestly? no. twitter serves images as plain files from their CDN. they strip all your metadata too. the only real defense is proving you made it first (proof of ownership) + filing DMCA takedowns when you catch someone stealing.</p>
         </div>
-      </main>
+
+        <div>
+          <h3 className="font-semibold text-[var(--foreground)] mb-1">is the proof certificate legit in court?</h3>
+          <p>the SHA-256 hash is cryptographically solid — the same tech used in blockchain and digital signatures. it&apos;s not a copyright registration (that&apos;s the US copyright office, ~$65), but it&apos;s strong supplementary evidence. email the certificate to yourself for a third-party timestamp from gmail/outlook.</p>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-[var(--foreground)] mb-1">what about AI scraping?</h3>
+          <p>check out <Link href="/resources" className="text-[var(--accent)] hover:underline">nightshade and glaze</Link> in our resources page. they poison your images so AI models that train on them produce garbage. use them before posting anywhere.</p>
+        </div>
+      </section>
     </div>
   );
 }
