@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import FileDropZone from "../components/FileDropZone";
 
 const POSITIONS = [
@@ -17,28 +17,22 @@ const TABS = [
   { id: "invisible", label: "Invisible Watermark" },
 ];
 
-// Encode a string into the least significant bits of pixel data
 function embedLSB(imageData, message) {
   const pixels = imageData.data;
   const msgBytes = new TextEncoder().encode(message);
   const bits = [];
 
-  // 32-bit length header
   for (let i = 31; i >= 0; i--) {
     bits.push((msgBytes.length >> i) & 1);
   }
-  // Message bits
   for (const byte of msgBytes) {
     for (let i = 7; i >= 0; i--) {
       bits.push((byte >> i) & 1);
     }
   }
 
-  // Use RGB channels only (skip alpha)
   const maxBits = Math.floor(pixels.length / 4) * 3;
-  if (bits.length > maxBits) {
-    return false;
-  }
+  if (bits.length > maxBits) return false;
 
   let bitIdx = 0;
   for (let i = 0; i < pixels.length && bitIdx < bits.length; i++) {
@@ -49,7 +43,6 @@ function embedLSB(imageData, message) {
   return true;
 }
 
-// Read an LSB-embedded message from pixel data
 function extractLSB(imageData) {
   const pixels = imageData.data;
   const bits = [];
@@ -87,260 +80,285 @@ function extractLSB(imageData) {
   }
 }
 
+function removeBackground(canvas, ctx, threshold) {
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const d = imgData.data;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i] > threshold && d[i + 1] > threshold && d[i + 2] > threshold) {
+      d[i + 3] = 0;
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+
 export default function WatermarkPage() {
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [tab, setTab] = useState("text");
-  const [previewUrl, setPreviewUrl] = useState(null);
   const canvasRef = useRef(null);
+  const previewCanvasRef = useRef(null);
+  const sigBgCanvasRef = useRef(null);
+  const [loadedImg, setLoadedImg] = useState(null);
 
-  // Text watermark state
   const [text, setText] = useState("");
   const [position, setPosition] = useState("bottom-right");
   const [opacity, setOpacity] = useState(0.5);
   const [fontSize, setFontSize] = useState(24);
 
-  // Signature/image watermark state
   const [sigUrl, setSigUrl] = useState(null);
   const [sigPosition, setSigPosition] = useState("bottom-right");
   const [sigOpacity, setSigOpacity] = useState(0.5);
   const [sigScale, setSigScale] = useState(0.2);
+  const [loadedSig, setLoadedSig] = useState(null);
+  const [removeBg, setRemoveBg] = useState(false);
+  const [bgThreshold, setBgThreshold] = useState(220);
 
-  // Invisible watermark state
   const [hiddenMsg, setHiddenMsg] = useState("");
   const [embedStatus, setEmbedStatus] = useState(null);
   const [extractedMsg, setExtractedMsg] = useState(null);
+  const [invisibleOutputUrl, setInvisibleOutputUrl] = useState(null);
 
   const handleFile = useCallback((file) => {
     setImage(file);
     const url = URL.createObjectURL(file);
     setImageUrl(url);
-    setPreviewUrl(null);
     setEmbedStatus(null);
     setExtractedMsg(null);
+    setInvisibleOutputUrl(null);
+
+    const img = new Image();
+    img.onload = () => setLoadedImg(img);
+    img.src = url;
   }, []);
 
   function handleSigFile(e) {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      setSigUrl(URL.createObjectURL(file));
+      const url = URL.createObjectURL(file);
+      setSigUrl(url);
+      const sig = new Image();
+      sig.onload = () => setLoadedSig(sig);
+      sig.src = url;
     }
   }
 
-  function applyTextWatermark() {
-    if (!image || !text.trim()) return;
-
-    const canvas = canvasRef.current;
+  // Real-time text watermark
+  useEffect(() => {
+    if (tab !== "text" || !loadedImg) return;
+    const canvas = previewCanvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const img = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
 
-      ctx.globalAlpha = opacity;
-      ctx.fillStyle = "white";
-      ctx.strokeStyle = "rgba(0,0,0,0.7)";
-      ctx.lineWidth = Math.max(1, fontSize / 12);
-      ctx.font = `bold ${fontSize}px system-ui, sans-serif`;
+    canvas.width = loadedImg.width;
+    canvas.height = loadedImg.height;
+    ctx.drawImage(loadedImg, 0, 0);
 
-      const wText = text.trim();
+    if (!text.trim()) return;
 
-      if (position === "tile") {
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        const stepX = fontSize * wText.length * 0.7;
-        const stepY = fontSize * 4;
-        for (let y = -img.height; y < img.height * 2; y += stepY) {
-          for (let x = -img.width; x < img.width * 2; x += stepX) {
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(-Math.PI / 6);
-            ctx.strokeText(wText, 0, 0);
-            ctx.fillText(wText, 0, 0);
-            ctx.restore();
-          }
+    ctx.globalAlpha = opacity;
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "rgba(0,0,0,0.7)";
+    ctx.lineWidth = Math.max(1, fontSize / 12);
+    ctx.font = `bold ${fontSize}px system-ui, sans-serif`;
+
+    const wText = text.trim();
+
+    if (position === "tile") {
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const stepX = Math.max(fontSize * 3, fontSize * wText.length * 0.7);
+      const stepY = fontSize * 4;
+      for (let y = -loadedImg.height; y < loadedImg.height * 2; y += stepY) {
+        for (let x = -loadedImg.width; x < loadedImg.width * 2; x += stepX) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(-Math.PI / 6);
+          ctx.strokeText(wText, 0, 0);
+          ctx.fillText(wText, 0, 0);
+          ctx.restore();
         }
-      } else {
-        const pad = fontSize;
-        let x, y;
-        ctx.textBaseline = "bottom";
+      }
+    } else {
+      const pad = fontSize;
+      let x, y;
+      ctx.textBaseline = "bottom";
 
-        switch (position) {
-          case "bottom-right":
-            ctx.textAlign = "right";
-            x = img.width - pad;
-            y = img.height - pad;
-            break;
-          case "bottom-left":
-            ctx.textAlign = "left";
-            x = pad;
-            y = img.height - pad;
-            break;
-          case "top-right":
-            ctx.textAlign = "right";
-            x = img.width - pad;
-            y = pad + fontSize;
-            break;
-          case "top-left":
-            ctx.textAlign = "left";
-            x = pad;
-            y = pad + fontSize;
-            break;
-          case "center":
-            ctx.textAlign = "center";
-            x = img.width / 2;
-            y = img.height / 2 + fontSize / 2;
-            break;
-        }
-
-        ctx.shadowColor = "rgba(0,0,0,0.8)";
-        ctx.shadowBlur = 4;
-        ctx.shadowOffsetX = 2;
-        ctx.shadowOffsetY = 2;
-        ctx.strokeText(wText, x, y);
-        ctx.fillText(wText, x, y);
+      switch (position) {
+        case "bottom-right":
+          ctx.textAlign = "right";
+          x = loadedImg.width - pad;
+          y = loadedImg.height - pad;
+          break;
+        case "bottom-left":
+          ctx.textAlign = "left";
+          x = pad;
+          y = loadedImg.height - pad;
+          break;
+        case "top-right":
+          ctx.textAlign = "right";
+          x = loadedImg.width - pad;
+          y = pad + fontSize;
+          break;
+        case "top-left":
+          ctx.textAlign = "left";
+          x = pad;
+          y = pad + fontSize;
+          break;
+        case "center":
+          ctx.textAlign = "center";
+          x = loadedImg.width / 2;
+          y = loadedImg.height / 2 + fontSize / 2;
+          break;
       }
 
-      ctx.globalAlpha = 1;
-      setPreviewUrl(canvas.toDataURL("image/png"));
-    };
-    img.src = imageUrl;
-  }
+      ctx.shadowColor = "rgba(0,0,0,0.8)";
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 2;
+      ctx.strokeText(wText, x, y);
+      ctx.fillText(wText, x, y);
+    }
 
-  function applyImageWatermark() {
-    if (!image || !sigUrl) return;
+    ctx.globalAlpha = 1;
+  }, [tab, loadedImg, text, position, opacity, fontSize]);
 
-    const canvas = canvasRef.current;
+  // Real-time signature/image watermark
+  useEffect(() => {
+    if (tab !== "image" || !loadedImg) return;
+    const canvas = previewCanvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const img = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
 
-      const sig = new Image();
-      sig.onload = () => {
-        const sw = img.width * sigScale;
-        const sh = (sig.height / sig.width) * sw;
-        const pad = 20;
-        let x, y;
+    canvas.width = loadedImg.width;
+    canvas.height = loadedImg.height;
+    ctx.drawImage(loadedImg, 0, 0);
 
-        switch (sigPosition) {
-          case "bottom-right":
-            x = img.width - sw - pad;
-            y = img.height - sh - pad;
-            break;
-          case "bottom-left":
-            x = pad;
-            y = img.height - sh - pad;
-            break;
-          case "top-right":
-            x = img.width - sw - pad;
-            y = pad;
-            break;
-          case "top-left":
-            x = pad;
-            y = pad;
-            break;
-          case "center":
-            x = (img.width - sw) / 2;
-            y = (img.height - sh) / 2;
-            break;
-          case "tile":
-            ctx.globalAlpha = sigOpacity;
-            const stepX = sw * 1.8;
-            const stepY = sh * 2.5;
-            for (let ty = -img.height / 2; ty < img.height * 1.5; ty += stepY) {
-              for (let tx = -img.width / 2; tx < img.width * 1.5; tx += stepX) {
-                ctx.save();
-                ctx.translate(tx + sw / 2, ty + sh / 2);
-                ctx.rotate(-Math.PI / 6);
-                ctx.drawImage(sig, -sw / 2, -sh / 2, sw, sh);
-                ctx.restore();
-              }
-            }
-            ctx.globalAlpha = 1;
-            setPreviewUrl(canvas.toDataURL("image/png"));
-            return;
+    if (!loadedSig) return;
+
+    let sigSource = loadedSig;
+    if (removeBg) {
+      const tmpCanvas = sigBgCanvasRef.current;
+      const tmpCtx = tmpCanvas.getContext("2d");
+      tmpCanvas.width = loadedSig.width;
+      tmpCanvas.height = loadedSig.height;
+      tmpCtx.drawImage(loadedSig, 0, 0);
+      removeBackground(tmpCanvas, tmpCtx, bgThreshold);
+      sigSource = tmpCanvas;
+    }
+
+    const sw = loadedImg.width * sigScale;
+    const sh = (loadedSig.height / loadedSig.width) * sw;
+    const pad = 20;
+
+    if (sigPosition === "tile") {
+      ctx.globalAlpha = sigOpacity;
+      const stepX = sw * 1.8;
+      const stepY = sh * 2.5;
+      for (let ty = -loadedImg.height / 2; ty < loadedImg.height * 1.5; ty += stepY) {
+        for (let tx = -loadedImg.width / 2; tx < loadedImg.width * 1.5; tx += stepX) {
+          ctx.save();
+          ctx.translate(tx + sw / 2, ty + sh / 2);
+          ctx.rotate(-Math.PI / 6);
+          ctx.drawImage(sigSource, -sw / 2, -sh / 2, sw, sh);
+          ctx.restore();
         }
+      }
+      ctx.globalAlpha = 1;
+      return;
+    }
 
-        ctx.globalAlpha = sigOpacity;
-        ctx.drawImage(sig, x, y, sw, sh);
-        ctx.globalAlpha = 1;
-        setPreviewUrl(canvas.toDataURL("image/png"));
-      };
-      sig.src = sigUrl;
-    };
-    img.src = imageUrl;
-  }
+    let x, y;
+    switch (sigPosition) {
+      case "bottom-right": x = loadedImg.width - sw - pad; y = loadedImg.height - sh - pad; break;
+      case "bottom-left": x = pad; y = loadedImg.height - sh - pad; break;
+      case "top-right": x = loadedImg.width - sw - pad; y = pad; break;
+      case "top-left": x = pad; y = pad; break;
+      case "center": x = (loadedImg.width - sw) / 2; y = (loadedImg.height - sh) / 2; break;
+    }
+
+    ctx.globalAlpha = sigOpacity;
+    ctx.drawImage(sigSource, x, y, sw, sh);
+    ctx.globalAlpha = 1;
+  }, [tab, loadedImg, loadedSig, sigPosition, sigOpacity, sigScale, removeBg, bgThreshold]);
 
   function applyInvisibleWatermark() {
-    if (!image || !hiddenMsg.trim()) return;
+    if (!loadedImg || !hiddenMsg.trim()) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const img = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
+    canvas.width = loadedImg.width;
+    canvas.height = loadedImg.height;
+    ctx.drawImage(loadedImg, 0, 0);
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const success = embedLSB(imageData, hiddenMsg.trim());
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const success = embedLSB(imageData, hiddenMsg.trim());
 
-      if (success) {
-        ctx.putImageData(imageData, 0, 0);
-        setPreviewUrl(canvas.toDataURL("image/png"));
-        setEmbedStatus("success");
-      } else {
-        setEmbedStatus("too-large");
-      }
-    };
-    img.src = imageUrl;
+    if (success) {
+      ctx.putImageData(imageData, 0, 0);
+      setInvisibleOutputUrl(canvas.toDataURL("image/png"));
+      setEmbedStatus("success");
+    } else {
+      setEmbedStatus("too-large");
+    }
   }
 
   function extractInvisible() {
-    if (!image) return;
+    if (!loadedImg) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const img = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
+    canvas.width = loadedImg.width;
+    canvas.height = loadedImg.height;
+    ctx.drawImage(loadedImg, 0, 0);
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const msg = extractLSB(imageData);
-      setExtractedMsg(msg || "(No hidden message found)");
-    };
-    img.src = imageUrl;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const msg = extractLSB(imageData);
+    setExtractedMsg(msg || "(No hidden message found)");
   }
 
   function download() {
-    if (!previewUrl) return;
+    if (tab === "invisible") {
+      if (!invisibleOutputUrl) return;
+      const link = document.createElement("a");
+      const name = image.name.replace(/\.[^.]+$/, "");
+      link.download = `${name}_hidden.png`;
+      link.href = invisibleOutputUrl;
+      link.click();
+      return;
+    }
+
+    const canvas = previewCanvasRef.current;
+    if (!canvas) return;
     const link = document.createElement("a");
     const name = image.name.replace(/\.[^.]+$/, "");
-    link.download = `${name}_watermarked.png`;
-    link.href = previewUrl;
+    const suffix = tab === "text" ? "watermarked" : "signed";
+    link.download = `${name}_${suffix}.png`;
+    link.href = canvas.toDataURL("image/png");
     link.click();
   }
 
   function reset() {
     setImage(null);
     setImageUrl(null);
-    setPreviewUrl(null);
+    setLoadedImg(null);
     setSigUrl(null);
+    setLoadedSig(null);
+    setRemoveBg(false);
     setEmbedStatus(null);
     setExtractedMsg(null);
+    setInvisibleOutputUrl(null);
   }
+
+  const canDownload =
+    (tab === "text" && loadedImg && text.trim()) ||
+    (tab === "image" && loadedImg && loadedSig) ||
+    (tab === "invisible" && invisibleOutputUrl);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-2">Watermark</h1>
       <p className="text-[var(--muted)] mb-8">
-        Add visible or invisible watermarks to your art before posting. Text, custom signatures, or hidden messages embedded directly into the pixels. The goal is to make removal as hard as possible.
+        Add visible or invisible watermarks to your art before posting. Changes preview in real-time as you adjust settings.
       </p>
 
       {!imageUrl ? (
@@ -352,7 +370,7 @@ export default function WatermarkPage() {
             {TABS.map((t) => (
               <button
                 key={t.id}
-                onClick={() => { setTab(t.id); setPreviewUrl(null); setEmbedStatus(null); setExtractedMsg(null); }}
+                onClick={() => { setTab(t.id); setEmbedStatus(null); setExtractedMsg(null); }}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   tab === t.id
                     ? "bg-[var(--accent)] text-white"
@@ -415,14 +433,7 @@ export default function WatermarkPage() {
                 </div>
               </div>
               <div className="mt-4 flex gap-3">
-                <button
-                  onClick={applyTextWatermark}
-                  disabled={!text.trim()}
-                  className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  Apply Text Watermark
-                </button>
-                {previewUrl && (
+                {canDownload && (
                   <button onClick={download} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-medium transition-colors">
                     Download
                   </button>
@@ -434,7 +445,7 @@ export default function WatermarkPage() {
             </div>
           )}
 
-          {/* Signature / Image Watermark */}
+          {/* Signature / Image */}
           {tab === "image" && (
             <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6">
               <div className="grid md:grid-cols-2 gap-4">
@@ -488,18 +499,51 @@ export default function WatermarkPage() {
                   />
                 </div>
               </div>
+
+              {/* Background removal */}
+              {sigUrl && (
+                <div className="mt-4 p-4 bg-[var(--background)] border border-[var(--border)] rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setRemoveBg(!removeBg)}
+                      className={`relative shrink-0 w-11 h-6 rounded-full transition-colors ${
+                        removeBg ? "bg-[var(--accent)]" : "bg-[var(--border)]"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                          removeBg ? "translate-x-5" : ""
+                        }`}
+                      />
+                    </button>
+                    <div>
+                      <p className="text-sm font-medium">Remove Background</p>
+                      <p className="text-xs text-[var(--muted)]">
+                        Strips white/light backgrounds from signature photos. Works best with pen on paper.
+                      </p>
+                    </div>
+                  </div>
+                  {removeBg && (
+                    <div className="mt-3">
+                      <label className="block text-sm text-[var(--muted)] mb-1">
+                        Threshold: {bgThreshold} <span className="text-xs">(lower = keeps more background, higher = removes more)</span>
+                      </label>
+                      <input
+                        type="range" min="150" max="250"
+                        value={bgThreshold}
+                        onChange={(e) => setBgThreshold(Number(e.target.value))}
+                        className="w-full accent-[var(--accent)]"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
               <p className="text-xs text-[var(--muted)] mt-3">
-                Tip: Use a transparent PNG of your signature or logo for best results. Set to Tile with low opacity for full coverage that&apos;s hard to crop out.
+                Tip: Use a transparent PNG for best results. If you photographed your signature on paper, toggle &quot;Remove Background&quot; above.
               </p>
               <div className="mt-4 flex gap-3">
-                <button
-                  onClick={applyImageWatermark}
-                  disabled={!sigUrl}
-                  className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  Apply Signature
-                </button>
-                {previewUrl && (
+                {canDownload && (
                   <button onClick={download} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-medium transition-colors">
                     Download
                   </button>
@@ -545,7 +589,7 @@ export default function WatermarkPage() {
                   >
                     Extract from Image
                   </button>
-                  {previewUrl && (
+                  {invisibleOutputUrl && (
                     <button onClick={download} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-medium transition-colors">
                       Download PNG
                     </button>
@@ -575,23 +619,34 @@ export default function WatermarkPage() {
             </div>
           )}
 
-          {/* Preview */}
+          {/* Live Preview */}
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4">
             <p className="text-sm text-[var(--muted)] mb-3">
-              {previewUrl ? "Preview (watermarked):" : "Original:"}
+              {tab === "invisible"
+                ? (invisibleOutputUrl ? "Preview (embedded):" : "Original:")
+                : "Live Preview:"}
             </p>
             <div className="flex justify-center">
-              <img
-                src={previewUrl || imageUrl}
-                alt="Preview"
-                className="max-w-full max-h-[600px] rounded-lg"
-              />
+              {tab === "invisible" ? (
+                <img
+                  src={invisibleOutputUrl || imageUrl}
+                  alt="Preview"
+                  className="max-w-full max-h-[600px] rounded-lg"
+                />
+              ) : (
+                <canvas
+                  ref={previewCanvasRef}
+                  className="max-w-full max-h-[600px] rounded-lg"
+                  style={{ objectFit: "contain" }}
+                />
+              )}
             </div>
           </div>
         </div>
       )}
 
       <canvas ref={canvasRef} className="hidden" />
+      <canvas ref={sigBgCanvasRef} className="hidden" />
     </div>
   );
 }

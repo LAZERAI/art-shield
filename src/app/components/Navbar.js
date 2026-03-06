@@ -7,6 +7,8 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/proof", label: "Proof" },
   { href: "/watermark", label: "Watermark" },
+  { href: "/resize", label: "Resize" },
+  { href: "/search", label: "Search" },
   { href: "/dmca", label: "DMCA" },
   { href: "/resources", label: "Resources" },
 ];

@@ -45,6 +45,24 @@ export default function Home() {
           </p>
         </Link>
 
+        <Link href="/resize" className="group block p-6 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5">
+          <h2 className="text-lg font-semibold mb-2 group-hover:text-[var(--accent)] transition-colors">
+            Image Resizer
+          </h2>
+          <p className="text-sm text-[var(--muted)]">
+            Downscale your art to web-safe resolution before posting. Keeps your full-res originals as proof while sharing smaller versions.
+          </p>
+        </Link>
+
+        <Link href="/search" className="group block p-6 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5">
+          <h2 className="text-lg font-semibold mb-2 group-hover:text-[var(--accent)] transition-colors">
+            Reverse Image Search
+          </h2>
+          <p className="text-sm text-[var(--muted)]">
+            Upload your art and search Google, TinEye, Yandex, and Bing to find where your work has been reposted without permission.
+          </p>
+        </Link>
+
         <Link href="/resources" className="group block p-6 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5">
           <h2 className="text-lg font-semibold mb-2 group-hover:text-[var(--accent)] transition-colors">
             Resources
