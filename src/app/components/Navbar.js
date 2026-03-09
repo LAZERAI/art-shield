@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
@@ -21,8 +22,9 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-[var(--background)]/90 backdrop-blur border-b border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold tracking-tight">
-          <span className="text-[var(--accent)]">Art</span>Shield
+        <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
+          <Image src="/favicon-32x32.png" alt="" width={28} height={28} className="shrink-0" />
+          <span><span className="text-[var(--accent)]">Art</span>Shield</span>
         </Link>
 
         {/* Desktop */}

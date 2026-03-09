@@ -112,6 +112,10 @@ export default function WatermarkPage() {
   const [loadedSig, setLoadedSig] = useState(null);
   const [removeBg, setRemoveBg] = useState(false);
   const [bgThreshold, setBgThreshold] = useState(220);
+  const [aiProcessing, setAiProcessing] = useState(false);
+  const [aiProgress, setAiProgress] = useState("");
+  const [aiSigUrl, setAiSigUrl] = useState(null);
+  const [aiSigImg, setAiSigImg] = useState(null);
 
   const [hiddenMsg, setHiddenMsg] = useState("");
   const [embedStatus, setEmbedStatus] = useState(null);
@@ -136,9 +140,94 @@ export default function WatermarkPage() {
     if (file && file.type.startsWith("image/")) {
       const url = URL.createObjectURL(file);
       setSigUrl(url);
+      setAiSigUrl(null);
+      setAiSigImg(null);
       const sig = new Image();
       sig.onload = () => setLoadedSig(sig);
       sig.src = url;
+    }
+  }
+
+  async function runAiBackgroundRemoval() {
+    if (!sigUrl || aiProcessing) return;
+    setAiProcessing(true);
+    setAiProgress("Loading AI model (first time downloads ~44MB)...");
+    try {
+      const { AutoModel, AutoProcessor, RawImage } = await import("@huggingface/transformers");
+
+      const model = await AutoModel.from_pretrained("briaai/RMBG-1.4", {
+        dtype: "q8",
+        progress_callback: (p) => {
+          if (p.status === "progress" && p.total) {
+            const pct = Math.round((p.loaded / p.total) * 100);
+            setAiProgress(`Downloading model... ${pct}%`);
+          } else if (p.status === "ready") {
+            setAiProgress("Model loaded. Processing...");
+          }
+        },
+      });
+      const processor = await AutoProcessor.from_pretrained("briaai/RMBG-1.4");
+
+      setAiProgress("Processing image...");
+      const img = await RawImage.fromURL(sigUrl);
+      const { pixel_values } = await processor(img);
+      const { output } = await model({ input: pixel_values });
+
+      const maskData = output[0].mul(255).to("uint8").tolist();
+      const [h, w] = [maskData.length, maskData[0].length];
+
+      const tmpCanvas = document.createElement("canvas");
+      tmpCanvas.width = img.width;
+      tmpCanvas.height = img.height;
+      const tmpCtx = tmpCanvas.getContext("2d");
+
+      const origImg = new Image();
+      origImg.crossOrigin = "anonymous";
+      await new Promise((resolve) => { origImg.onload = resolve; origImg.src = sigUrl; });
+      tmpCtx.drawImage(origImg, 0, 0);
+      const imgData = tmpCtx.getImageData(0, 0, img.width, img.height);
+
+      const maskCanvas = document.createElement("canvas");
+      maskCanvas.width = w;
+      maskCanvas.height = h;
+      const maskCtx = maskCanvas.getContext("2d");
+      const maskImgData = maskCtx.createImageData(w, h);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const idx = (y * w + x) * 4;
+          const v = maskData[y][x];
+          maskImgData.data[idx] = v;
+          maskImgData.data[idx + 1] = v;
+          maskImgData.data[idx + 2] = v;
+          maskImgData.data[idx + 3] = 255;
+        }
+      }
+      maskCtx.putImageData(maskImgData, 0, 0);
+
+      const scaledMaskCanvas = document.createElement("canvas");
+      scaledMaskCanvas.width = img.width;
+      scaledMaskCanvas.height = img.height;
+      const scaledMaskCtx = scaledMaskCanvas.getContext("2d");
+      scaledMaskCtx.drawImage(maskCanvas, 0, 0, img.width, img.height);
+      const scaledMask = scaledMaskCtx.getImageData(0, 0, img.width, img.height);
+
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        imgData.data[i + 3] = scaledMask.data[i];
+      }
+      tmpCtx.putImageData(imgData, 0, 0);
+
+      const resultUrl = tmpCanvas.toDataURL("image/png");
+      setAiSigUrl(resultUrl);
+      const resultImg = new Image();
+      resultImg.onload = () => setAiSigImg(resultImg);
+      resultImg.src = resultUrl;
+
+      setAiProgress("Done!");
+    } catch (err) {
+      console.error("AI bg removal error:", err);
+      setAiProgress("Error: " + (err.message || "Failed to process. Try the basic method instead."));
+    } finally {
+      setAiProcessing(false);
     }
   }
 
@@ -236,7 +325,9 @@ export default function WatermarkPage() {
     if (!loadedSig) return;
 
     let sigSource = loadedSig;
-    if (removeBg) {
+    if (aiSigImg) {
+      sigSource = aiSigImg;
+    } else if (removeBg) {
       const tmpCanvas = sigBgCanvasRef.current;
       const tmpCtx = tmpCanvas.getContext("2d");
       tmpCanvas.width = loadedSig.width;
@@ -279,7 +370,7 @@ export default function WatermarkPage() {
     ctx.globalAlpha = sigOpacity;
     ctx.drawImage(sigSource, x, y, sw, sh);
     ctx.globalAlpha = 1;
-  }, [tab, loadedImg, loadedSig, sigPosition, sigOpacity, sigScale, removeBg, bgThreshold]);
+  }, [tab, loadedImg, loadedSig, sigPosition, sigOpacity, sigScale, removeBg, bgThreshold, aiSigImg]);
 
   function applyInvisibleWatermark() {
     if (!loadedImg || !hiddenMsg.trim()) return;
@@ -344,6 +435,9 @@ export default function WatermarkPage() {
     setSigUrl(null);
     setLoadedSig(null);
     setRemoveBg(false);
+    setAiSigUrl(null);
+    setAiSigImg(null);
+    setAiProgress("");
     setEmbedStatus(null);
     setExtractedMsg(null);
     setInvisibleOutputUrl(null);
@@ -536,11 +630,41 @@ export default function WatermarkPage() {
                       />
                     </div>
                   )}
+
+                  <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                    <div className="flex items-start gap-3">
+                      <button
+                        onClick={runAiBackgroundRemoval}
+                        disabled={aiProcessing}
+                        className="shrink-0 px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-60 disabled:cursor-wait text-white rounded-lg text-sm font-medium transition-colors"
+                      >
+                        {aiProcessing ? "Processing..." : aiSigImg ? "Re-run AI Removal" : "AI Background Removal"}
+                      </button>
+                      <div>
+                        <p className="text-xs text-[var(--muted)]">
+                          Uses BiRefNet (briaai/RMBG-1.4) for high-quality removal. First use downloads the model (~44MB), then it stays cached in your browser.
+                        </p>
+                        {aiProgress && (
+                          <p className={`text-xs mt-1 ${aiProgress.startsWith("Error") ? "text-[var(--error)]" : aiProgress === "Done!" ? "text-[var(--success)]" : "text-[var(--accent)]"}`}>
+                            {aiProgress}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    {aiSigUrl && (
+                      <div className="mt-3 flex items-center gap-3">
+                        <div className="p-2 rounded-lg border border-[var(--border)]" style={{ backgroundImage: 'repeating-conic-gradient(var(--border) 0% 25%, transparent 0% 50%)', backgroundSize: '16px 16px' }}>
+                          <img src={aiSigUrl} alt="AI result" className="h-16 rounded" />
+                        </div>
+                        <span className="text-xs text-[var(--success)]">Background removed with AI</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
               <p className="text-xs text-[var(--muted)] mt-3">
-                Tip: Use a transparent PNG for best results. If you photographed your signature on paper, toggle &quot;Remove Background&quot; above.
+                Tip: Use a transparent PNG for best results. If you photographed your signature on paper, use &quot;AI Background Removal&quot; for the cleanest result, or toggle &quot;Basic&quot; for a quick threshold-based removal.
               </p>
               <div className="mt-4 flex gap-3">
                 {canDownload && (
