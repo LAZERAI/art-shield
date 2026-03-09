@@ -374,7 +374,7 @@ export default function WatermarkPage() {
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   tab === t.id
                     ? "bg-[var(--accent)] text-white"
-                    : "text-[var(--muted)] hover:text-white hover:bg-[var(--background)]"
+                    : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--background)]"
                 }`}
               >
                 {t.label}
@@ -434,11 +434,11 @@ export default function WatermarkPage() {
               </div>
               <div className="mt-4 flex gap-3">
                 {canDownload && (
-                  <button onClick={download} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-medium transition-colors">
+                  <button onClick={download} className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors" style={{ background: 'var(--success-btn)' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--success-btn-hover)'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--success-btn)'}>
                     Download
                   </button>
                 )}
-                <button onClick={reset} className="px-4 py-2 border border-[var(--border)] text-[var(--muted)] hover:text-white rounded-lg text-sm transition-colors">
+                <button onClick={reset} className="px-4 py-2 border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] rounded-lg text-sm transition-colors">
                   New Image
                 </button>
               </div>
@@ -544,11 +544,11 @@ export default function WatermarkPage() {
               </p>
               <div className="mt-4 flex gap-3">
                 {canDownload && (
-                  <button onClick={download} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-medium transition-colors">
+                  <button onClick={download} className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors" style={{ background: 'var(--success-btn)' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--success-btn-hover)'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--success-btn)'}>
                     Download
                   </button>
                 )}
-                <button onClick={reset} className="px-4 py-2 border border-[var(--border)] text-[var(--muted)] hover:text-white rounded-lg text-sm transition-colors">
+                <button onClick={reset} className="px-4 py-2 border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] rounded-lg text-sm transition-colors">
                   New Image
                 </button>
               </div>
@@ -590,22 +590,22 @@ export default function WatermarkPage() {
                     Extract from Image
                   </button>
                   {invisibleOutputUrl && (
-                    <button onClick={download} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-medium transition-colors">
+                    <button onClick={download} className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors" style={{ background: 'var(--success-btn)' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--success-btn-hover)'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--success-btn)'}>
                       Download PNG
                     </button>
                   )}
-                  <button onClick={reset} className="px-4 py-2 border border-[var(--border)] text-[var(--muted)] hover:text-white rounded-lg text-sm transition-colors">
+                  <button onClick={reset} className="px-4 py-2 border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] rounded-lg text-sm transition-colors">
                     New Image
                   </button>
                 </div>
 
                 {embedStatus === "success" && (
-                  <div className="p-3 bg-green-900/30 border border-green-700/50 rounded-lg text-sm text-green-400">
+                  <div className="p-3 rounded-lg text-sm" style={{ background: 'var(--success-bg)', border: '1px solid var(--success-border)', color: 'var(--success)' }}>
                     Message embedded successfully. Download the PNG to keep it.
                   </div>
                 )}
                 {embedStatus === "too-large" && (
-                  <div className="p-3 bg-red-900/30 border border-red-700/50 rounded-lg text-sm text-red-400">
+                  <div className="p-3 rounded-lg text-sm" style={{ background: 'var(--error-bg)', border: '1px solid var(--error-border)', color: 'var(--error)' }}>
                     Message is too large for this image. Try a shorter message or a larger image.
                   </div>
                 )}

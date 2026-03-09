@@ -204,7 +204,7 @@ For informational purposes only. Not legal advice.`;
             <div className="flex gap-2">
               <button
                 onClick={copyNotice}
-                className="px-3 py-1 text-xs border border-[var(--border)] rounded-lg text-[var(--muted)] hover:text-white transition-colors"
+                className="px-3 py-1 text-xs border border-[var(--border)] rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
               >
                 Copy
               </button>
@@ -219,8 +219,8 @@ For informational purposes only. Not legal advice.`;
           <pre className="text-xs text-[var(--muted)] whitespace-pre-wrap bg-[var(--background)] border border-[var(--border)] rounded-lg p-4 max-h-96 overflow-y-auto">
             {generated}
           </pre>
-          <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-700/30 rounded-lg">
-            <p className="text-xs text-yellow-300">
+          <div className="mt-4 p-3 rounded-lg" style={{ background: 'var(--warning-bg)', border: '1px solid var(--warning-border)' }}>
+            <p className="text-xs" style={{ color: 'var(--warning)' }}>
               ⚠️ This is a template, not legal advice. Review it before sending. A DMCA notice is a legal document made under penalty of perjury. Make sure all information is accurate.
             </p>
           </div>

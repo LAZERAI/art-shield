@@ -79,7 +79,7 @@ export default function SearchPage() {
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm text-[var(--muted)]">Your image:</p>
-              <button onClick={reset} className="px-3 py-1.5 border border-[var(--border)] text-[var(--muted)] hover:text-white rounded-lg text-sm transition-colors">
+              <button onClick={reset} className="px-3 py-1.5 border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] rounded-lg text-sm transition-colors">
                 Change Image
               </button>
             </div>

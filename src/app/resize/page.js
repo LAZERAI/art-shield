@@ -137,7 +137,7 @@ export default function ResizePage() {
             </div>
             <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center">
               <p className="text-xs text-[var(--muted)]">Reduction</p>
-              <p className="font-mono text-sm text-green-400">
+              <p className="font-mono text-sm" style={{ color: 'var(--success)' }}>
                 {reductionPercent > 0 ? `-${reductionPercent}%` : "No resize needed"}
               </p>
             </div>
@@ -206,11 +206,14 @@ export default function ResizePage() {
               <button
                 onClick={download}
                 disabled={!outputUrl}
-                className="px-4 py-2 bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
+                className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{ background: 'var(--success-btn)' }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--success-btn-hover)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'var(--success-btn)'}
               >
                 Download Resized
               </button>
-              <button onClick={reset} className="px-4 py-2 border border-[var(--border)] text-[var(--muted)] hover:text-white rounded-lg text-sm transition-colors">
+              <button onClick={reset} className="px-4 py-2 border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] rounded-lg text-sm transition-colors">
                 New Image
               </button>
             </div>

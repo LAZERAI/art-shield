@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 const links = [
   { href: "/", label: "Home" },
@@ -25,7 +26,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop */}
-        <div className="hidden md:flex gap-1">
+        <div className="hidden md:flex items-center gap-1">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -33,16 +34,19 @@ export default function Navbar() {
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 pathname === l.href
                   ? "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30"
-                  : "text-[var(--muted)] hover:text-white hover:bg-[var(--card)]"
+                  : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card)]"
               }`}
             >
               {l.label}
             </Link>
           ))}
+          <ThemeToggle />
         </div>
 
         {/* Mobile toggle */}
-        <button
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <button
           className="md:hidden p-2 text-[var(--muted)]"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
@@ -55,6 +59,7 @@ export default function Navbar() {
             )}
           </svg>
         </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -68,7 +73,7 @@ export default function Navbar() {
               className={`block px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 pathname === l.href
                   ? "bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30"
-                  : "text-[var(--muted)] hover:text-white"
+                  : "text-[var(--muted)] hover:text-[var(--foreground)]"
               }`}
             >
               {l.label}
