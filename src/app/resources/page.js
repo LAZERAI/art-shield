@@ -276,7 +276,7 @@ export default function ResourcesPage() {
 
       <div className="mt-12 p-4 bg-[var(--card)] border border-[var(--border)] rounded-xl text-center">
         <p className="text-sm text-[var(--muted)]">
-          Know a tool or resource that should be on this list? Open an issue on <a href="https://github.com/LAZERAI/art-shield" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">GitHub</a>.
+          Know a tool or resource that should be on this list? Open an issue on <a href="https://github.com/LAZERAI/art-shield" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] underline hover:text-[var(--accent-hover)]">GitHub</a>.
         </p>
       </div>
     </div>

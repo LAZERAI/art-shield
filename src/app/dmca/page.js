@@ -138,7 +138,7 @@ For informational purposes only. Not legal advice.`;
               <p className="text-xs text-[var(--muted)] mt-1">
                 Send to: {platform.email}
                 {platform.form && (
-                  <> | <a href={platform.form} target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">Online form ↗</a></>
+                  <> | <a href={platform.form} target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] underline hover:text-[var(--accent-hover)]">Online form ↗</a></>
                 )}
               </p>
             </div>

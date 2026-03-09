@@ -11,7 +11,7 @@ export default function Home() {
         <p className="text-lg text-[var(--muted)] max-w-xl mx-auto mb-3">
           Free tools to prove your art is yours, watermark it, and send takedown notices when someone steals it.
         </p>
-        <p className="text-sm text-[var(--accent)]/80 mt-4">
+        <p className="text-sm text-[var(--accent)] mt-4">
           Everything runs in your browser. We never see your files.
         </p>
       </section>
@@ -94,7 +94,7 @@ export default function Home() {
 
         <div>
           <h3 className="font-semibold text-[var(--foreground)] mb-1">What about AI scraping?</h3>
-          <p>Check out <Link href="/resources" className="text-[var(--accent)] hover:underline">Nightshade and Glaze</Link> in our Resources page. They add invisible perturbations to your images that corrupt AI model training. Use them before posting anywhere.</p>
+          <p>Check out <Link href="/resources" className="text-[var(--accent)] underline hover:text-[var(--accent-hover)]">Nightshade and Glaze</Link> in our Resources page. They add invisible perturbations to your images that corrupt AI model training. Use them before posting anywhere.</p>
         </div>
       </section>
     </div>

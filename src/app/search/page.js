@@ -146,7 +146,7 @@ export default function SearchPage() {
               </li>
               <li>
                 <strong className="text-[var(--foreground)]">Found a theft?</strong> Screenshot the page as evidence, then head to our{" "}
-                <a href="/dmca" className="text-[var(--accent)] hover:underline">DMCA Generator</a> to file a takedown.
+                <a href="/dmca" className="text-[var(--accent)] underline hover:text-[var(--accent-hover)]">DMCA Generator</a> to file a takedown.
               </li>
             </ul>
           </div>
