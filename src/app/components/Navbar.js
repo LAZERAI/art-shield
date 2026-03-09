@@ -23,7 +23,7 @@ export default function Navbar() {
     <nav className="fixed top-0 w-full z-50 bg-[var(--background)]/90 backdrop-blur border-b border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-          <Image src="/favicon-32x32.png" alt="" width={28} height={28} className="shrink-0" />
+          <Image src="/logo-64.png" alt="" width={28} height={34} className="shrink-0" />
           <span><span className="text-[var(--accent)]">Art</span>Shield</span>
         </Link>
 
