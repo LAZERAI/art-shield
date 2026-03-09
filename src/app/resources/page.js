@@ -13,6 +13,11 @@ const sections = [
         url: "https://glaze.cs.uchicago.edu/",
         desc: "Protects against AI style mimicry. Adds subtle visual perturbations that prevent AI from learning your specific art style.",
       },
+      {
+        name: "Fawkes",
+        url: "http://sandlab.cs.uchicago.edu/fawkes/",
+        desc: "Facial cloaking tool from UChicago. Adds invisible perturbations to photos of faces so AI can't build accurate facial recognition models from them.",
+      },
     ],
   },
   {
@@ -34,6 +39,31 @@ const sections = [
         url: "https://tineye.com/",
         desc: "Reverse image search engine specialized in finding exact and modified copies of images across the web.",
       },
+      {
+        name: "SauceNao",
+        url: "https://saucenao.com/",
+        desc: "Reverse image search popular with illustrators and anime artists. Searches Pixiv, DeviantArt, booru sites, and more.",
+      },
+      {
+        name: "IQDB",
+        url: "https://iqdb.org/",
+        desc: "Multi-site reverse image search that checks Danbooru, Gelbooru, and other art databases simultaneously.",
+      },
+      {
+        name: "CopySeeker",
+        url: "https://copyseeker.net/",
+        desc: "Reverse image search specifically designed for finding unauthorized copies of your images online.",
+      },
+      {
+        name: "Have I Been Trained?",
+        url: "https://haveibeentrained.com/",
+        desc: "Check if your art was scraped into AI training datasets like LAION. Search by image to see if your work is being used to train models.",
+      },
+      {
+        name: "Search by Image (Extension)",
+        url: "https://github.com/dessant/search-by-image",
+        desc: "Browser extension that lets you right-click any image and search it across 30+ search engines at once. Works on Chrome, Firefox, Edge.",
+      },
     ],
   },
   {
@@ -54,6 +84,42 @@ const sections = [
         name: "ArtStation",
         url: "https://www.artstation.com/",
         desc: "Professional art portfolio. Has 'NoAI' meta tag option. Check your settings, it's unchecked by default.",
+      },
+      {
+        name: "Buzzly",
+        url: "https://buzzly.art/",
+        desc: "Newer artist-focused social platform. Built as an alternative to mainstream social media for sharing and discovering original art.",
+      },
+      {
+        name: "Artfol",
+        url: "https://www.artfol.app/",
+        desc: "Mobile-first art sharing platform designed specifically for artists. Chronological feed, no algorithm burying your posts.",
+      },
+    ],
+  },
+  {
+    title: "Photo Forensics and Metadata",
+    desc: "Tools to analyze images, prove edits, and manage metadata. Useful for proving your work is original.",
+    items: [
+      {
+        name: "FotoForensics",
+        url: "https://www.fotoforensics.com/",
+        desc: "Error Level Analysis (ELA) tool. Upload an image to detect edits, composites, and modifications. Useful for proving an image was tampered with.",
+      },
+      {
+        name: "Forensically",
+        url: "https://29a.ch/photo-forensics/",
+        desc: "Browser-based photo forensics suite. ELA, clone detection, noise analysis, and more. Completely free and runs locally.",
+      },
+      {
+        name: "Aperisolve",
+        url: "https://aperisolve.fr/",
+        desc: "Steganography analysis tool. Detects hidden data in images across multiple layers. Good for verifying invisible watermarks.",
+      },
+      {
+        name: "ExifTool",
+        url: "https://exiftool.org/",
+        desc: "The gold standard for reading, writing, and editing image metadata. Command-line tool that works with every image format.",
       },
     ],
   },
