@@ -8,13 +8,6 @@ const ENGINES = [
     name: "Google Images",
     desc: "Largest index. Best for finding reposts on social media and websites.",
     color: "#4285F4",
-    search: (file) => {
-      // Google Lens via upload - opens the Google Lens page
-      // We create a form that submits to Google Lens
-      const url = "https://lens.google.com/uploadbyurl?url=";
-      // For local files, we need to use the search-by-image page
-      window.open("https://images.google.com/", "_blank");
-    },
     searchUrl: "https://images.google.com/",
   },
   {
