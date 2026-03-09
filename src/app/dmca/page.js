@@ -2,11 +2,12 @@
 import { useState } from "react";
 
 const PLATFORMS = [
-  { id: "twitter", label: "Twitter / X", email: "copyright@x.com" },
-  { id: "instagram", label: "Instagram / Facebook", email: "ip@fb.com" },
-  { id: "tiktok", label: "TikTok", email: "copyright@tiktok.com" },
-  { id: "youtube", label: "YouTube", email: "Use YouTube's online DMCA form" },
-  { id: "reddit", label: "Reddit", email: "Use Reddit's online DMCA form at reddit.com/report" },
+  { id: "twitter", label: "Twitter / X", email: "copyright@x.com", form: "https://help.twitter.com/forms/ipi" },
+  { id: "instagram", label: "Instagram / Facebook", email: "ip@fb.com", form: "https://help.instagram.com/contact/552695131608132" },
+  { id: "tiktok", label: "TikTok", email: "copyright@tiktok.com", form: "https://www.tiktok.com/legal/report/Copyright" },
+  { id: "youtube", label: "YouTube", email: "copyright@youtube.com", form: "https://www.youtube.com/copyright_complaint_form" },
+  { id: "pinterest", label: "Pinterest", email: "copyright@pinterest.com", form: "https://www.pinterest.com/about/copyright/dmca-pin/" },
+  { id: "reddit", label: "Reddit", email: "Use reddit.com/report", form: "https://www.reddit.com/report" },
   { id: "other", label: "Other (generic)", email: "Find the platform's DMCA/copyright contact" },
 ];
 
@@ -134,7 +135,12 @@ For informational purposes only. Not legal advice.`;
                   <option key={p.id} value={p.id}>{p.label}</option>
                 ))}
               </select>
-              <p className="text-xs text-[var(--muted)] mt-1">Send to: {platform.email}</p>
+              <p className="text-xs text-[var(--muted)] mt-1">
+                Send to: {platform.email}
+                {platform.form && (
+                  <> | <a href={platform.form} target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">Online form ↗</a></>
+                )}
+              </p>
             </div>
             <div>
               <label className="block text-sm text-[var(--muted)] mb-1">Artwork Title</label>

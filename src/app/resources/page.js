@@ -130,17 +130,47 @@ const sections = [
       {
         name: "Twitter/X Copyright Policy",
         url: "https://help.x.com/en/rules-and-policies/copyright-policy",
-        desc: "File DMCA directly: copyright@x.com. They must respond within 24-48 hours.",
+        desc: "File DMCA via their online form or email copyright@x.com. They must respond within 24-48 hours.",
       },
       {
         name: "Instagram/Meta IP Report",
         url: "https://help.instagram.com/contact/552695131608132",
-        desc: "Instagram's dedicated form for reporting intellectual property violations.",
+        desc: "Instagram's dedicated form for reporting intellectual property violations. Also works for Facebook content (both are Meta).",
       },
       {
-        name: "EFF Artist's Guide",
+        name: "TikTok Copyright Report",
+        url: "https://www.tiktok.com/legal/report/Copyright",
+        desc: "File a copyright claim through TikTok's online form. They also accept reports in-app via the video's share menu.",
+      },
+      {
+        name: "YouTube Copyright Form",
+        url: "https://support.google.com/youtube/answer/2807622",
+        desc: "File DMCA through YouTube's webform or email copyright@youtube.com. Known for fast takedowns.",
+      },
+      {
+        name: "Pinterest Copyright Policy",
+        url: "https://policy.pinterest.com/en/copyright",
+        desc: "File a copyright report through their online form or email copyright@pinterest.com. They also have a Content Claiming Portal for bulk takedowns.",
+      },
+      {
+        name: "Reddit Report",
+        url: "https://www.reddit.com/report",
+        desc: "Reddit's general report form handles copyright claims. Select 'Copyright infringement' and fill out the DMCA fields.",
+      },
+      {
+        name: "DMCA.com",
+        url: "https://www.dmca.com/",
+        desc: "Free DMCA protection badges and monitoring. Paid plans offer automated takedown services. Has protected over 525 million items.",
+      },
+      {
+        name: "Creative Commons",
+        url: "https://creativecommons.org/licenses/",
+        desc: "If you want to share your art with specific permissions (like 'no commercial use' or 'no AI training'), CC licenses make it legally clear.",
+      },
+      {
+        name: "EFF Fair Use Guide",
         url: "https://www.eff.org/issues/intellectual-property",
-        desc: "Know your rights. The EFF has guides on copyright, DMCA, and how to protect your creative work.",
+        desc: "Know your rights. The EFF has guides on fair use, copyright, and how to navigate IP law as a creator.",
       },
       {
         name: "US Copyright Office",
@@ -158,6 +188,10 @@ const sections = [
         desc: "Put your searchable username (not just initials) in a spot that's hard to crop out. Make it findable.",
       },
       {
+        name: "Use both visible and invisible watermarks",
+        desc: "Visible ones deter casual theft. Invisible ones (like ArtShield's steganography tool) prove ownership even if someone crops or edits the visible one out.",
+      },
+      {
         name: "Post at lower resolution",
         desc: "Upload max ~2000px wide for social media. Keep the full-res original. Nobody needs ultra-res except print buyers.",
       },
@@ -166,12 +200,32 @@ const sections = [
         desc: "Process every image with both tools before uploading anywhere. Even if it's not perfect, it adds friction for AI scrapers.",
       },
       {
+        name: "Opt out of AI training everywhere",
+        desc: "Most platforms now have opt-out settings buried in privacy menus. Check DeviantArt, ArtStation, Instagram, and X. Do it today, they don't apply retroactively.",
+      },
+      {
         name: "Keep proof of creation",
         desc: "Save PSD/CLIP files with layers, timelapse videos, WIP screenshots. These prove you're the original creator.",
       },
       {
         name: "Email yourself timestamps",
         desc: "Email your finished art to yourself. The email timestamp from a third party (Gmail, etc.) serves as proof of when you had the file.",
+      },
+      {
+        name: "Use the same username everywhere",
+        desc: "Pick one handle and use it on every platform. Makes it obvious when someone else is posting your work under a different name.",
+      },
+      {
+        name: "Set up Google Alerts for your name",
+        desc: "Go to google.com/alerts and add your artist name and username. You'll get email notifications when your name appears on new pages.",
+      },
+      {
+        name: "Keep a portfolio site you control",
+        desc: "Social platforms come and go. A personal site (even a free Carrd or Neocities page) is the one place you fully own and can always link to as proof.",
+      },
+      {
+        name: "Split commission sheets into cropped previews",
+        desc: "Don't post full-resolution commission examples. Crop them, add your watermark, and link to your portfolio for the full versions.",
       },
       {
         name: "Label art as AI in alt-text",
