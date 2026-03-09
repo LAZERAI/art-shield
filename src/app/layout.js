@@ -13,8 +13,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://art-shield.vercel.app"),
   title: "ArtShield - Protect Your Art",
   description: "Free browser-based tools for artists. Proof of ownership, visible & invisible watermarking, DMCA takedown generation. Your art never leaves your device.",
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
+  openGraph: {
+    title: "ArtShield - Protect Your Art",
+    description: "Free browser-based tools for artists. Proof of ownership, visible & invisible watermarking, DMCA takedown generation. Your art never leaves your device.",
+    url: "https://art-shield.vercel.app",
+    siteName: "ArtShield",
+    images: [{ url: "/og-image.png", width: 1024, height: 1024 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "ArtShield - Protect Your Art",
+    description: "Free browser-based tools for artists. Proof of ownership, visible & invisible watermarking, DMCA takedown generation.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }) {
