@@ -1,5 +1,6 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import FileDropZone from "../components/FileDropZone";
 
 const ENGINES = [
@@ -36,100 +37,188 @@ const ENGINES = [
 export default function SearchPage() {
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [status, setStatus] = useState("");
+  const engineSectionRef = useRef(null);
+  const objectUrlRef = useRef(null);
 
-  const handleFile = useCallback((file) => {
-    setImage(file);
-    setImageUrl(URL.createObjectURL(file));
+  const openEngine = useCallback((engine) => {
+    const popup = window.open(engine.searchUrl, "_blank", "noopener,noreferrer");
+
+    if (!popup) {
+      setStatus(
+        `Your browser blocked ${engine.name}. Allow pop-ups for this site or use the individual engine links below.`,
+      );
+      return false;
+    }
+
+    setStatus(`Opened ${engine.name}. Upload the preview image in the new tab.`);
+    return true;
   }, []);
 
-  function openEngine(engine) {
-    window.open(engine.searchUrl, "_blank", "noopener,noreferrer");
-  }
+  const openAll = useCallback(() => {
+    const opened = ENGINES.reduce((count, engine) => {
+      const popup = window.open(engine.searchUrl, "_blank", "noopener,noreferrer");
+      return popup ? count + 1 : count;
+    }, 0);
 
-  function openAll() {
-    ENGINES.forEach((e) => {
-      window.open(e.searchUrl, "_blank", "noopener,noreferrer");
+    if (opened === ENGINES.length) {
+      setStatus("Opened all search tabs. Upload the preview image in each tab.");
+      return;
+    }
+
+    if (opened > 0) {
+      setStatus(`Opened ${opened} of ${ENGINES.length} tabs. Your browser blocked the rest.`);
+      return;
+    }
+
+    setStatus("Your browser blocked the new tabs. Use the engine links below instead.");
+  }, []);
+
+  const handleFile = useCallback((file) => {
+    if (!file || !file.type.startsWith("image/")) {
+      return;
+    }
+
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+    }
+
+    const nextUrl = URL.createObjectURL(file);
+    objectUrlRef.current = nextUrl;
+    setImage(file);
+    setImageUrl(nextUrl);
+    setStatus("Image loaded. Choose an engine below to open its search tab.");
+
+    requestAnimationFrame(() => {
+      engineSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-  }
+  }, []);
 
-  function reset() {
+  const reset = useCallback(() => {
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    }
+
     setImage(null);
     setImageUrl(null);
-  }
+    setStatus("");
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-2">Reverse Image Search</h1>
       <p className="text-[var(--muted)] mb-8">
-        Find where your art is being used. Upload your image here to preview it, then launch searches across multiple engines. Each opens in a new tab where you drag or upload the same image.
+        Drop your artwork to preview it, then open a search tab. Reverse-image engines cannot receive a local file automatically, so you will upload or drag the preview into the new tab yourself.
       </p>
 
+      <div className="grid gap-4 md:grid-cols-3 mb-8">
+        <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs uppercase tracking-wide text-[var(--muted)] mb-2">Step 1</p>
+          <p className="text-sm font-medium">Drop your artwork here.</p>
+        </div>
+        <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs uppercase tracking-wide text-[var(--muted)] mb-2">Step 2</p>
+          <p className="text-sm font-medium">Open a search engine in a new tab.</p>
+        </div>
+        <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4">
+          <p className="text-xs uppercase tracking-wide text-[var(--muted)] mb-2">Step 3</p>
+          <p className="text-sm font-medium">Upload the preview image there.</p>
+        </div>
+      </div>
+
       {!imageUrl ? (
-        <FileDropZone onFile={handleFile} label="Drop your artwork here to get started" />
+        <FileDropZone onFile={handleFile} label="Drop your artwork here to preview it and start reverse search" />
       ) : (
         <div className="space-y-6">
-          {/* Image preview */}
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between gap-3 mb-3">
               <p className="text-sm text-[var(--muted)]">Your image:</p>
-              <button onClick={reset} className="px-3 py-1.5 border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] rounded-lg text-sm transition-colors">
+              <button
+                type="button"
+                onClick={reset}
+                className="px-3 py-1.5 border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] rounded-lg text-sm transition-colors"
+              >
                 Change Image
               </button>
             </div>
             <div className="flex justify-center">
-              <img src={imageUrl} alt="Your artwork" className="max-w-full max-h-[300px] rounded-lg" />
+              <Image
+                src={imageUrl}
+                alt="Your artwork"
+                width={1024}
+                height={1024}
+                unoptimized
+                className="max-w-full max-h-[300px] rounded-lg object-contain"
+              />
             </div>
             <p className="text-xs text-[var(--muted)] mt-3 text-center">
               {image.name} ({(image.size / 1024).toFixed(0)} KB)
             </p>
           </div>
 
-          {/* Instructions */}
           <div className="bg-[var(--accent)]/10 border border-[var(--accent)]/30 rounded-xl p-4">
             <p className="text-sm">
-              <strong>How it works:</strong> Click a search engine below to open it. Then drag your image from above (or re-upload it) into the search engine's upload area. We can't auto-upload to third-party sites because your image never leaves your browser.
+              <strong>What happens next:</strong> click a search engine below. It opens in a new tab, and you upload the preview image there. If a tab does not open, your browser likely blocked pop-ups.
             </p>
           </div>
 
-          {/* Open all button */}
-          <button
-            onClick={openAll}
-            className="w-full px-4 py-3 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white rounded-xl text-sm font-medium transition-colors"
-          >
-            Open All Search Engines at Once
-          </button>
+          {status ? (
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm text-[var(--muted)]">
+              {status}
+            </div>
+          ) : null}
 
-          {/* Engine cards */}
-          <div className="grid md:grid-cols-2 gap-4">
-            {ENGINES.map((engine) => (
-              <button
-                key={engine.id}
-                onClick={() => openEngine(engine)}
-                className="text-left p-5 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5 group"
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <div
-                    className="w-3 h-3 rounded-full shrink-0"
-                    style={{ backgroundColor: engine.color }}
-                  />
-                  <h3 className="font-semibold group-hover:text-[var(--accent)] transition-colors">
-                    {engine.name}
-                  </h3>
-                  <svg className="w-4 h-4 text-[var(--muted)] ml-auto" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
-                  </svg>
-                </div>
-                <p className="text-sm text-[var(--muted)]">{engine.desc}</p>
-              </button>
-            ))}
+          <div ref={engineSectionRef} className="space-y-4">
+            <button
+              type="button"
+              onClick={openAll}
+              className="w-full px-4 py-3 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white rounded-xl text-sm font-medium transition-colors"
+            >
+              Open All Search Engines At Once
+            </button>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {ENGINES.map((engine) => (
+                <a
+                  key={engine.id}
+                  href={engine.searchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setStatus(`Opened ${engine.name}. Upload the preview image in the new tab.`)}
+                  className="text-left p-5 rounded-xl bg-[var(--card)] border border-[var(--border)] hover:border-[var(--accent)]/50 transition-all hover:-translate-y-0.5 group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div
+                      className="w-3 h-3 rounded-full shrink-0"
+                      style={{ backgroundColor: engine.color }}
+                    />
+                    <h3 className="font-semibold group-hover:text-[var(--accent)] transition-colors">
+                      {engine.name}
+                    </h3>
+                    <svg className="w-4 h-4 text-[var(--muted)] ml-auto" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-[var(--muted)]">{engine.desc}</p>
+                </a>
+              ))}
+            </div>
           </div>
 
-          {/* Tips */}
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 space-y-3">
             <h3 className="font-semibold text-sm">Tips for Better Results</h3>
             <ul className="text-sm text-[var(--muted)] space-y-2">
               <li>
-                <strong className="text-[var(--foreground)]">Search all four engines.</strong> Each has a different index. Art that doesn't show up on Google might appear on Yandex.
+                <strong className="text-[var(--foreground)]">Search all four engines.</strong> Each has a different index. Art that does not show up on Google might appear on Yandex.
               </li>
               <li>
                 <strong className="text-[var(--foreground)]">Try cropping.</strong> If someone cropped your watermark out, search with just the main subject area.
