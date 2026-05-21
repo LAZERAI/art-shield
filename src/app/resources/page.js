@@ -180,6 +180,83 @@ const sections = [
     ],
   },
   {
+    title: "Watermarking Tools",
+    desc: "Batch and advanced watermarking if you need something beyond ArtShield's built-in watermark feature.",
+    items: [
+      {
+        name: "Watermarkly",
+        url: "https://watermarkly.com/",
+        desc: "Online watermarking tool. Add text, logos, or images to multiple photos at once. No software installation needed.",
+      },
+      {
+        name: "BatchWatermark",
+        url: "https://batchwatermark.com/",
+        desc: "Batch watermarking for large image collections. Apply the same watermark to hundreds of images in seconds.",
+      },
+      {
+        name: "Watermarkup",
+        url: "https://watermarkup.com/watermark.html",
+        desc: "Simple online watermarking. Drag and drop your images, position your watermark, and download processed files.",
+      },
+    ],
+  },
+  {
+    title: "Image Resizing Tools",
+    desc: "Batch and advanced resizing if you need something beyond ArtShield's built-in resize feature.",
+    items: [
+      {
+        name: "PixelHunter",
+        url: "https://pixelhunter.io/",
+        desc: "Automatically crop and resize images for different platforms (Instagram, Facebook, Twitter, etc.). Saves time on formatting.",
+      },
+      {
+        name: "Resize App Icon",
+        url: "https://resizeappicon.com/",
+        desc: "Specialized for resizing square images. Great for app icons, profile pictures, and social media avatars.",
+      },
+      {
+        name: "Pro Image Tool",
+        url: "https://proimagetool.com/",
+        desc: "Professional batch image processing. Resize, crop, convert formats, and apply filters to multiple images simultaneously.",
+      },
+      {
+        name: "Simple Image Resizer",
+        url: "https://www.simpleimageresizer.com/",
+        desc: "Lightweight and fast. Resize one or batch process multiple images without any registration required.",
+      },
+      {
+        name: "ImageResizer",
+        url: "https://imageresizer.com/",
+        desc: "Online image resizing with preset sizes or custom dimensions. Batch processing and format conversion included.",
+      },
+      {
+        name: "PicResize",
+        url: "https://picresize.com/",
+        desc: "Free online tool to resize, rotate, crop, and compress images. Supports bulk uploads and batch processing.",
+      },
+      {
+        name: "Birme",
+        url: "https://www.birme.net/",
+        desc: "Batch image resizer with crop, rotate, and filter features. Fast processing of hundreds of images.",
+      },
+      {
+        name: "Bulk Image Resize",
+        url: "https://bulkimageresize.com/",
+        desc: "Specialized in bulk operations. Resize, convert format, and adjust quality for large image collections.",
+      },
+      {
+        name: "ResizeNow",
+        url: "https://www.resizenow.com/en",
+        desc: "Simple batch resizer. Upload multiple images, set your dimensions, and download all at once.",
+      },
+      {
+        name: "BulkResizePhotos",
+        url: "https://bulkresizephotos.com/",
+        desc: "Optimized for photographers. Batch resize, rename, and optimize images for web or print.",
+      },
+    ],
+  },
+  {
     title: "Tips from Other Artists",
     desc: "Practical advice from Reddit and artist communities.",
     items: [
