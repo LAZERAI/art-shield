@@ -30,7 +30,7 @@ Upload your artwork and generate a SHA-256 hash certificate with a timestamp. A 
 Downscale your art before posting. Social media presets (1200px, 1500px, 600px), custom dimensions, JPEG quality slider, PNG/JPEG format toggle. Keep full-res originals as proof.
 
 ### Reverse Image Search
-Upload your art and search Google, TinEye, Yandex, and Bing simultaneously to find unauthorized reposts.
+Upload your art and search Google Lens, TinEye, Yandex, Bing, SauceNao, Copyseeker, IQDB, and more — plus browser tools and extensions for faster workflows.
 
 ### DMCA Takedown Generator
 Generate a properly formatted DMCA takedown notice for **Twitter/X, Instagram, TikTok, YouTube, Reddit, Pinterest, and DeviantArt**. Includes direct links to each platform's copyright form.
